@@ -3,17 +3,12 @@ package org.example.services;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.example.models.Users;
-import org.springframework.data.domain.Sort;
-import org.springframework.data.mongodb.core.ReactiveMongoTemplate;
-import org.springframework.data.mongodb.core.query.Criteria;
-import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import org.example.repositories.UserRepository;
 
-import java.util.Collections;
 
 @Service
 @Slf4j
@@ -21,7 +16,6 @@ import java.util.Collections;
 @Transactional
 public class UserService {
 
-    private final ReactiveMongoTemplate reactiveMongoTemplate;
     private final UserRepository userRepository;
 
     public Mono<Users> createUser(Users user) {
@@ -53,13 +47,6 @@ public class UserService {
     }
 
     public Flux<Users> fetchUsers(String name) {
-        Query query = new Query()
-                .with(Sort.by(Collections.singletonList(Sort.Order.asc("age")))
-                );
-        query.addCriteria(Criteria
-                .where("name")
-                .regex(name)
-        );
-        return reactiveMongoTemplate.find(query, Users.class);
+        return userRepository.findByName(name);
     }
 }

@@ -3,11 +3,14 @@ spring:
     name: webflux-guide
   webflux:
     base-path: /api
-  data:
-    mongodb:
-      authentication-database: admin
-      uri: mongodb://localhost:27017/test
-      database: test
+  r2dbc:
+    url: r2dbc:mysql://localhost:3306/reactive_login
+    username: reactive_login
+    password: Frustrating@254#
+    port: 3306
+    host: localhost
+    database: reactive_login
+    driver: mysql
 
   logging:
     level:
@@ -16,9 +19,7 @@ spring:
         springFramework:
           web: INFO
           data:
-            mongodb:
-              core:
-                ReactiveMongoTemplate: DEBUG
+            r2dbc: DEBUG
       reactor:
         netty:
           http:

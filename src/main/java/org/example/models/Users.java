@@ -2,14 +2,15 @@ package org.example.models;
 
 import lombok.*;
 import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.data.relational.core.mapping.Table;
 
 @ToString
 @EqualsAndHashCode(of = {"id", "name", "department"})
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
-@Document(value = "users")
+@Builder
+@Table("users")
 public class Users {
 
     @Id

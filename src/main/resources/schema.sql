@@ -1,0 +1,2 @@
+DROP TABLE IF EXISTS users;
+CREATE TABLE users(id SERIAL PRIMARY KEY, name VARCHAR(64), age INTEGER, salary FLOAT, department VARCHAR(32));
