@@ -1,13 +1,19 @@
 package org.example.controllers;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.example.dtos.CreateUserDTO;
+import org.example.dtos.UpdateUserDTO;
 import org.example.models.Users;
+import org.example.utils.ApiResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import org.example.services.UserService;
+
+import java.util.List;
 
 
 @RequiredArgsConstructor
@@ -19,34 +25,37 @@ public class UserController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public Mono<Users> create(@RequestBody Users user) {
-        return userService.createUser(user);
+    public Mono<ResponseEntity<ApiResponse<Users>>> create(@RequestBody @Valid CreateUserDTO user) {
+        Mono<Users> result = userService.createUser(user);
+        return result.flatMap(ApiResponse::success);
     }
 
     @GetMapping
-    public Flux<Users> getAllUsers() {
-        return userService.getAllUsers();
+    public Mono<ResponseEntity<ApiResponse<List<Users>>>> getAllUsers() {
+        return userService.getAllUsers()
+                .collectList().flatMap((users -> {
+                    return ApiResponse.of(true, "Request successful", users, HttpStatus.OK);
+                }));
     }
 
     @GetMapping("/{userId}")
-    public Mono<ResponseEntity<Users>> getUserById(@PathVariable String userId){
+    public Mono<ResponseEntity<ApiResponse<Users>>> getUserById(@PathVariable String userId){
         Mono<Users> user = userService.findById(userId);
-        return user.map(ResponseEntity::ok)
-                .defaultIfEmpty(ResponseEntity.notFound().build());
+        return user.flatMap(ApiResponse::success);
     }
 
     @PutMapping("/{userId}")
-    public Mono<ResponseEntity<Users>> updateUserById(@PathVariable String userId, @RequestBody Users user){
+    public Mono<ResponseEntity<ApiResponse<Users>>> updateUserById(@PathVariable String userId, @RequestBody @Valid UpdateUserDTO user){
             return userService.updateUser(userId, user)
-                    .map(ResponseEntity::ok)
-                    .defaultIfEmpty(ResponseEntity.badRequest().build());
+                    .flatMap(ApiResponse::success);
     }
 
     @DeleteMapping("/{userId}")
-    public Mono<ResponseEntity<Void>> deleteUserById(@PathVariable String userId) {
+    public Mono<ResponseEntity<ApiResponse<Users>>> deleteUserById(@PathVariable String userId) {
         return userService.deleteUser(userId)
-                .map( r -> ResponseEntity.ok().<Void>build())
-                .defaultIfEmpty(ResponseEntity.notFound().build());
+                .flatMap((user)->{
+                    return ApiResponse.of(true, "User deletion successful", user, HttpStatus.OK);
+                });
     }
 
     @GetMapping("/search")
