@@ -49,7 +49,6 @@ public class UserService {
                     if(user.getAge() != null) dbUser.setAge(user.getAge());
 //                    Optional.ofNullable(user.getSalary()).ifPresent(dbUser::setSalary);
 //                    Optional.ofNullable(user.getAge()).ifPresent(dbUser::setAge);
-                    System.out.println(dbUser);
                     return userRepository.save(dbUser);
                 });
     }
