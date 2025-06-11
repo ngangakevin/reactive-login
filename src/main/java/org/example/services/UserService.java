@@ -18,7 +18,6 @@ import reactor.core.publisher.Mono;
 import org.example.repositories.UserRepository;
 
 import java.util.Collections;
-import java.util.Optional;
 
 @Service
 @Slf4j
