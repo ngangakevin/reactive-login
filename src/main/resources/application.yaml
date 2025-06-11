@@ -8,7 +8,8 @@ spring:
       authentication-database: admin
       uri: mongodb://localhost:27017/test
       database: test
-
+  server:
+    port: 4000
   logging:
     level:
       org:
